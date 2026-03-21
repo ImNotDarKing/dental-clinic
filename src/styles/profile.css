@@ -1,0 +1,147 @@
+.profile-section {
+    padding: 70px 0;
+    min-height: calc(100vh - 200px);
+}
+
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.profile-card,
+.appointments-card {
+    background-color: var(--project-card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+.profile-card h2,
+.appointments-card h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.profile-info p {
+    padding: 10px 0;
+    font-size: 16px;
+}
+
+.profile-info p strong {
+    color: var(--accent);
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.btn-cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background-color: #bbb;
+}
+
+.btn-delete {
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appointments-table thead {
+    background-color: var(--accent);
+    color: white;
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.appointments-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.appointments-card {
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.appointments-card::-webkit-scrollbar {
+    width: 8px;
+}
+
+.appointments-card::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+.file-name {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.current-photo {
+    margin-top: 10px;
+}
+
+.current-photo p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.current-photo img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.doctor-photo-display {
+    margin-top: 15px;
+}
+
+.doctor-photo-display img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid var(--accent);
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}

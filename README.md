@@ -1,70 +1,272 @@
-# Getting Started with Create React App
+ 🦷 Dental Clinic - Веб-приложение для записи к стоматологам на JavaScript 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📋 Описание проекта
 
-## Available Scripts
+**Dental Clinic** — это полнофункциональное веб-приложение для управления записями в частной стоматологической клинике. Проект создан как **курсовая работа** для демонстрации навыков разработки современных веб-приложений с использованием **React** и **JavaScript**.
 
-In the project directory, you can run:
+### Назначение проекта
+Приложение предоставляет удобный интерфейс для:
+- **Пациентов**: просмотр врачей, онлайн-запись на приём, управление своими записями
+- **Врачей**: просмотр расписания пациентов и управление своим профилем
+- **Администраторов**: управление врачами, пациентами и записями в системе
 
-### `npm start`
+## 🛠️ Технический стек
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Frontend
+- **React 19.2.4** — библиотека для создания пользовательского интерфейса
+- **React Router DOM 7.13.1** — маршрутизация между страницами приложения
+- **CSS3** — стилизация компонентов (встроенные CSS-файлы без фреймворков)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Backend
+- **Express.js 5.2.1** — веб-фреймворк для Node.js
+- **SQLite3 6.0.1** — встроенная база данных
+- **JWT (jsonwebtoken 9.0.3)** — аутентификация и авторизация
+- **Bcrypt 6.0.0** — хеширование паролей
+- **Multer 2.1.1** — загрузка файлов (фотографии врачей)
+- **CORS 2.8.6** — кросс-доменные запросы
 
-### `npm test`
+### Инструменты разработки
+- **Create React App** — стандартная конфигурация React приложения
+- **React Scripts 5.0.1** — скрипты для разработки и сборки
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📁 Структура проекта
 
-### `npm run build`
+```
+dental-clinic/
+├── public/                    # Статические файлы
+│   ├── index.html            # Главный HTML файл
+│   ├── manifest.json         # Манифест PWA
+│   └── robots.txt            # Файл для поисковых роботов
+│
+├── src/
+│   ├── index.js              # Точка входа приложения
+│   ├── App.js                # Главный компонент с маршрутизацией
+│   ├── reportWebVitals.js    # Метрики производительности
+│   │
+│   ├── components/           # Переиспользуемые компоненты
+│   │   ├── navbar/
+│   │   │   ├── Navbar.js     # Навигационная панель
+│   │   │   └── style.css
+│   │   ├── header/
+│   │   │   ├── Header.js     # Главный заголовок страницы
+│   │   │   └── style.css
+│   │   ├── footer/
+│   │   │   ├── Footer.js     # Подвал сайта
+│   │   │   └── style.css
+│   │   ├── dantist/
+│   │   │   ├── Dantist.js    # Карточка врача
+│   │   │   └── style.css
+│   │   ├── appointment/
+│   │   │   ├── AppointmentModal.js  # Модальное окно записи
+│   │   │   └── style.css
+│   │   └── auth/
+│   │       ├── auth.js       # Компонент авторизации/регистрации
+│   │       ├── server.js     # Backend Express сервер
+│   │       └── style.css
+│   │
+│   ├── pages/                # Страницы приложения
+│   │   ├── Home.js           # Главная страница
+│   │   ├── Dantists.js       # Список всех врачей
+│   │   ├── Contacts.js       # Контактная информация
+│   │   ├── Profile.js        # Профиль пациента/врача
+│   │   └── Admin.js          # Панель администратора
+│   │
+│   ├── img/                  # Изображения
+│   │   ├── dantist/          # Фотографии врачей (загружаются динамически)
+│   │   └── icons/            # Иконки (социальные сети и т.д.)
+│   │
+│   └── styles/               # Глобальные стили
+│       ├── main.css          # Основные стили
+│       ├── admin.css         # Стили админ-панели
+│       ├── profile.css       # Стили профиля
+│       └── reset.css         # Сброс стандартных стилей браузера
+│
+├── package.json              # Описание проекта и зависимости
+└── README.md                 # Этот файл
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Процесс запуска
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Предварительные требования
+- **Node.js** (версия 14+ рекомендуется)
+- **npm** или **yarn** (поставляется с Node.js)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Установка и запуск
 
-### `npm run eject`
+1. **Установите зависимости:**
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **Запустите backend сервер (в отдельном терминале):**
+```bash
+# Перейдите в директорию auth компонента
+cd src/components/auth
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Запустите сервер
+node server.js
+```
+Backend запустится на `http://localhost:5000`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. **Запустите frontend (в основной директории):**
+```bash
+npm start
+```
+Приложение откроется в браузере на `http://localhost:3000`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. **Сборка для production:**
+```bash
+npm run build
+```
 
-## Learn More
+## 💡 Принцип работы и функциональность
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Основной процесс
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### 1. **Авторизация и регистрация**
+- Пользователи регистрируются или входят через форму на странице `/auth`
+- Пароли хешируются с помощью bcrypt
+- При успешной авторизации выдаётся **JWT токен**
+- Токен сохраняется в `localStorage` для поддержания сессии
 
-### Code Splitting
+#### 2. **Роли пользователей**
+- **Пациент** (role_id = 1): может записываться к врачам, видеть своих врачей
+- **Врач** (role_id = 2): может просматривать записи пациентов
+- **Администратор**: полное управление системой
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### 3. **Просмотр врачей**
+- На странице `/dantists` выводится список всех врачей
+- Каждый врач имеет карточку с фотографией, именем и специализацией
+- При клике на карточку открывается модальное окно для записи
 
-### Analyzing the Bundle Size
+#### 4. **Запись на приём**
+- Пациент выбирает дату, время и услугу
+- Система проверяет:
+  - Время приёма (10:00 - 20:00)
+  - Выходные дни (суббота и воскресенье)
+  - Наличие токена (пациент авторизован)
+- Запись сохраняется в БД и отправляется на сервер
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### 5. **Профиль пользователя**
+- **Пациент**: может видеть свои записи, отменять их, редактировать данные профиля
+- **Врач**: видит список своих пациентов и их приёмы
+- **Загрузка фотографии**: файлы загружаются на сервер через multer
 
-### Making a Progressive Web App
+#### 6. **Панель администратора**
+- Вход с логином и паролем (admin@example.com / 123456)
+- Управление врачами, пациентами и записями
+- Удаление любых данных из системы
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Поток данных
 
-### Advanced Configuration
+```
+Frontend (React)
+    ↓
+HTTP Запрос (Fetch API)
+    ↓
+Backend (Express)
+    ↓
+SQLite база данных
+    ↓
+Ответ с данными/токеном
+    ↓
+Frontend обновляет состояние (useState)
+    ↓
+Перерендер компонентов React
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🗄️ База данных
 
-### Deployment
+### Структура таблиц SQLite
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**users** — таблица пользователей
+```sql
+- user_id (INTEGER PRIMARY KEY AUTOINCREMENT)
+- email (TEXT UNIQUE NOT NULL)
+- password_hash (TEXT NOT NULL)
+- role_id (SMALLINT NOT NULL)
+```
 
-### `npm run build` fails to minify
+**patients** — таблица пациентов
+```sql
+- patient_id (INTEGER PRIMARY KEY AUTOINCREMENT)
+- user_id (INTEGER, FOREIGN KEY REFERENCES users(user_id))
+- first_name (TEXT NOT NULL)
+- last_name (TEXT NOT NULL)
+- phone_number (TEXT)
+- address (TEXT)
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**doctors** — таблица врачей
+```sql
+- doctor_id (INTEGER PRIMARY KEY AUTOINCREMENT)
+- user_id (INTEGER, FOREIGN KEY REFERENCES users(user_id))
+- first_name (TEXT NOT NULL)
+- last_name (TEXT NOT NULL)
+- specialization (TEXT NOT NULL)
+- experience_years (INTEGER)
+- photo_url (TEXT)
+```
+
+**appointments** — таблица записей
+```sql
+- appointment_id (INTEGER PRIMARY KEY AUTOINCREMENT)
+- patient_id (INTEGER, FOREIGN KEY REFERENCES patients(patient_id))
+- doctor_id (INTEGER, FOREIGN KEY REFERENCES doctors(doctor_id))
+- appointment_date (DATETIME NOT NULL)
+- service_type (TEXT NOT NULL)
+```
+
+## 🔐 Система безопасности
+
+- **JWT токены** для аутентификации
+- **Bcrypt** для хеширования паролей
+- **CORS** для контроля кросс-доменных запросов
+- **Middleware** аутентификации на защищённых маршрутах
+- **Валидация входных данных** на backend
+
+## 📱 Функции приложения
+
+### Для пациентов
+✅ Регистрация и вход  
+✅ Просмотр списка врачей  
+✅ Запись на приём  
+✅ Просмотр своих записей  
+✅ Отмена записей  
+✅ Редактирование профиля  
+✅ Загрузка фотографии профиля  
+
+### Для врачей
+✅ Вход в систему  
+✅ Просмотр расписания  
+✅ Управление профилем  
+✅ Просмотр записей пациентов  
+
+### Для администраторов
+✅ Управление врачами (добавление, удаление)  
+✅ Управление пациентами  
+✅ Управление записями  
+✅ Полный контроль над системой  
+
+## 🎯 Для чего был создан проект
+
+Этот проект создан в качестве **курсовой работы** для:
+1. Демонстрации навыков создания **полноценного веб-приложения** (frontend + backend)
+2. Практики работы с **React** и **JavaScript**
+3. Изучения **маршрутизации** в React (React Router)
+4. Освоения **API запросов** и работы с сервером
+5. Получения опыта с **аутентификацией и авторизацией**
+6. Разработки **базы данных** (SQLite)
+7. Создания **пользовательского интерфейса** с профессиональным дизайном
+
+## 📝 Примечания
+
+- Backend сервер должен быть запущен перед фронтендом
+- База данных автоматически создаётся при первом запуске сервера (`dentalClinicDB.db`)
+- Все данные сохраняются локально в SQLite файле
+- Приложение предназначено для локальной разработки и демонстрации
+
+## 👤 Автор
+
+Курсовой проект студента группы 4ИСПр, 2026 год  
+GitHub: [ImNotDarKing](https://github.com/ImNotDarKing)

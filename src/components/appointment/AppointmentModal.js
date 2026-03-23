@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API_BASE_URL from "../../api/config";
 import "./style.css";
 
 const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
@@ -59,7 +60,7 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/appointment", {
+            const response = await fetch(`${API_BASE_URL}/appointment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

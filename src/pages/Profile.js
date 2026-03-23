@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../api/config";
 import defaultDoctor from "../img/default-doctor.svg";
 import "../styles/profile.css";
 
@@ -36,7 +37,7 @@ const Profile = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const profileRes = await fetch("http://localhost:5000/profile", {
+            const profileRes = await fetch(`${API_BASE_URL}/profile`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             const profile = await profileRes.json();
@@ -45,7 +46,7 @@ const Profile = () => {
             setFormData(profile || {});
 
             const appointmentsRes = await fetch(
-                `http://localhost:5000/appointments?role=${role}`,
+                `${API_BASE_URL}/appointments?role=${role}`,
                 { headers: { "Authorization": `Bearer ${token}` } }
             );
             const apps = await appointmentsRes.json();
@@ -88,7 +89,7 @@ const Profile = () => {
                 const formDataWithPhoto = new FormData();
                 formDataWithPhoto.append('photo', photoFile);
 
-                const uploadRes = await fetch("http://localhost:5000/upload-photo", {
+                const uploadRes = await fetch(`${API_BASE_URL}/upload-photo`, {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -106,7 +107,7 @@ const Profile = () => {
                 }
             }
 
-            const response = await fetch("http://localhost:5000/profile", {
+            const response = await fetch(`${API_BASE_URL}/profile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -136,7 +137,7 @@ const Profile = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch(`http://localhost:5000/appointment/${appointmentId}`, {
+            const response = await fetch(`${API_BASE_URL}/appointment/${appointmentId}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -257,7 +258,7 @@ const Profile = () => {
                                                 <div className="current-photo">
                                                     <p>Текущее фото:</p>
                                                     <img 
-                                                        src={`http://localhost:5000${profileData.photo_url}`}
+                                                        src={`${API_BASE_URL}${profileData.photo_url}`}
                                                         alt="Фото профиля" 
                                                     />
                                                 </div>
@@ -288,7 +289,7 @@ const Profile = () => {
                                     {profileData.photo_url && (
                                         <div className="doctor-photo-display">
                                             <img 
-                                                src={`http://localhost:5000${profileData.photo_url}`}
+                                                src={`${API_BASE_URL}${profileData.photo_url}`}
                                                 alt="Фото врача" 
                                             />
                                         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../api/config";
 import "../styles/admin.css";
 
 const Admin = () => {
@@ -23,15 +24,23 @@ const Admin = () => {
 
     const loadData = async () => {
         try {
-            const doctorsRes = await fetch("http://localhost:5000/admin/doctors");
+            const adminToken = localStorage.getItem("adminToken");
+            if (!adminToken) {
+                console.error("Токен не найден");
+                return;
+            }
+
+            const headers = { "Authorization": `Bearer ${adminToken}` };
+
+            const doctorsRes = await fetch(`${API_BASE_URL}/admin/doctors`, { headers });
             const doctorsData = await doctorsRes.json();
             setDoctors(doctorsData);
 
-            const usersRes = await fetch("http://localhost:5000/admin/users");
+            const usersRes = await fetch(`${API_BASE_URL}/admin/users`, { headers });
             const usersData = await usersRes.json();
             setUsers(usersData);
 
-            const appointmentsRes = await fetch("http://localhost:5000/admin/appointments");
+            const appointmentsRes = await fetch(`${API_BASE_URL}/admin/appointments`, { headers });
             const appointmentsData = await appointmentsRes.json();
             setAppointments(appointmentsData);
         } catch (err) {
@@ -49,7 +58,7 @@ const Admin = () => {
         setMessage({ text: "", type: "" });
 
         try {
-            const response = await fetch("http://localhost:5000/admin/login", {
+            const response = await fetch(`${API_BASE_URL}/admin/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(loginData)
@@ -83,7 +92,7 @@ const Admin = () => {
         if (!window.confirm("Вы уверены?")) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/admin/doctors/${doctorId}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/doctors/${doctorId}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });
@@ -103,7 +112,7 @@ const Admin = () => {
         if (!window.confirm("Вы уверены?")) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/admin/users/${userId}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });
@@ -123,7 +132,7 @@ const Admin = () => {
         if (!window.confirm("Вы уверены?")) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/admin/appointments/${appointmentId}`, {
+            const response = await fetch(`${API_BASE_URL}/admin/appointments/${appointmentId}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });

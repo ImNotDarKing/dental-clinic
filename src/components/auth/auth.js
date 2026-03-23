@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../api/config";
 import "./style.css";
 
 const Auth = () => {
@@ -39,7 +40,7 @@ const Auth = () => {
         setMessage({ text: "", type: "" });
 
         try {
-            const response = await fetch("http://localhost:5000/login", {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(loginData)
@@ -64,7 +65,7 @@ const Auth = () => {
         setMessage({ text: "", type: "" });
 
         try {
-            const response = await fetch("http://localhost:5000/register", {
+            const response = await fetch(`${API_BASE_URL}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(registerData)

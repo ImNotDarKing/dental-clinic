@@ -582,12 +582,24 @@ app.delete('/admin/appointments/:id', authenticateAdminToken, (req, res) => {
 });
 
 
-if (config.nodeEnv === 'production') {
-	app.use(express.static(path.join(__dirname, '../build')));
-	app.get('*', (req, res) => {
-		res.sendFile(path.join(__dirname, '../build/index.html'));
+// Serve React app (both production and development)
+const buildPath = path.join(__dirname, '../build');
+console.log('Checking for React build at:', buildPath);
+console.log('Build folder exists:', fs.existsSync(buildPath));
+
+app.use(express.static(buildPath));
+
+// Catch all routes and serve index.html for React Router
+app.get('*', (req, res) => {
+	const indexPath = path.join(buildPath, 'index.html');
+	console.log('Serving index.html from:', indexPath);
+	res.sendFile(indexPath, (err) => {
+		if (err) {
+			console.error('Error serving index.html:', err);
+			res.status(404).json({ message: 'Page not found' });
+		}
 	});
-}
+});
 
 app.use((err, req, res, next) => {
 	console.error('Необработанная ошибка:', err);

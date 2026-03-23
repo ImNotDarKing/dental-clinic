@@ -21,7 +21,6 @@ function initSQLite() {
 	}
 }
 
-
 function createTablesIfNotExist() {
 	const tables = [
 		`CREATE TABLE IF NOT EXISTS users (

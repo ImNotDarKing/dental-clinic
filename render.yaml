@@ -15,4 +15,3 @@ services:
         value: https://dental-clinic.onrender.com
       - key: REACT_APP_BACKEND_URL
         value: https://dental-clinic.onrender.com
-

@@ -582,8 +582,15 @@ app.delete('/admin/appointments/:id', authenticateAdminToken, (req, res) => {
 });
 
 
+if (config.nodeEnv === 'production') {
+	app.use(express.static(path.join(__dirname, '../build')));
+	app.get('*', (req, res) => {
+		res.sendFile(path.join(__dirname, '../build/index.html'));
+	});
+}
+
 app.use((err, req, res, next) => {
-	console.error('❌ Необработанная ошибка:', err);
+	console.error('Необработанная ошибка:', err);
 	res.status(500).json({ message: 'Внутренняя ошибка сервера' });
 });
 

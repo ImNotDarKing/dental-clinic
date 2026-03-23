@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: dental-clinic
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: NODE_ENV=production node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: CORS_ORIGIN
+        scope: build
+        value: https://dental-clinic.onrender.com
+      - key: REACT_APP_BACKEND_URL
+        value: https://dental-clinic.onrender.com
+

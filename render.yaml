@@ -3,7 +3,7 @@ services:
     name: dental-clinic
     env: node
     plan: free
-    buildCommand: npm ci --build-from-source && npm run build
+    buildCommand: rm -rf node_modules package-lock.json && npm install && npm run build
     startCommand: NODE_ENV=production node server.js
     envVars:
       - key: NODE_ENV

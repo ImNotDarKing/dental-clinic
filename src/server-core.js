@@ -587,12 +587,12 @@ const buildPath = path.join(__dirname, '../build');
 console.log('Checking for React build at:', buildPath);
 console.log('Build folder exists:', fs.existsSync(buildPath));
 
+// Serve static files from build directory
 app.use(express.static(buildPath));
 
-// Catch all routes and serve index.html for React Router
-app.get('*', (req, res) => {
+// Catch all other routes and serve index.html for React Router (must be last)
+app.use((req, res) => {
 	const indexPath = path.join(buildPath, 'index.html');
-	console.log('Serving index.html from:', indexPath);
 	res.sendFile(indexPath, (err) => {
 		if (err) {
 			console.error('Error serving index.html:', err);

@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const path = require('path');
 const config = require('./config');
 
@@ -9,19 +9,16 @@ async function initDatabase() {
 }
 
 function initSQLite() {
-	return new Promise((resolve, reject) => {
+	try {
 		const dbPath = path.resolve(config.dbPath);
-		db = new sqlite3.Database(dbPath, (err) => {
-			if (err) {
-				console.error('Ошибка открытия SQLite:', err.message);
-				reject(err);
-			} else {
-				console.log(`SQLite БД открыта: ${dbPath}`);
-				createTablesIfNotExist();
-				resolve(db);
-			}
-		});
-	});
+		db = new Database(dbPath);
+		console.log(`SQLite БД открыта: ${dbPath}`);
+		createTablesIfNotExist();
+		return db;
+	} catch (err) {
+		console.error('Ошибка открытия SQLite:', err.message);
+		throw err;
+	}
 }
 
 
@@ -67,13 +64,12 @@ function createTablesIfNotExist() {
 	];
 
 	tables.forEach((query) => {
-		db.run(query, (err) => {
-			if (err) {
-				console.error('Ошибка создания таблицы:', err.message);
-			} else {
-				console.log('Таблица готова');
-			}
-		});
+		try {
+			db.exec(query);
+			console.log('Таблица готова');
+		} catch (err) {
+			console.error('Ошибка создания таблицы:', err.message);
+		}
 	});
 }
 

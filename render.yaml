@@ -11,7 +11,6 @@ services:
       - key: PORT
         value: 3000
       - key: CORS_ORIGIN
-        scope: build
         value: https://dental-clinic.onrender.com
       - key: REACT_APP_BACKEND_URL
         scope: build

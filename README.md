@@ -232,4 +232,4 @@ npm install && npm run build && node server.js
 
 Курсовой проект студента группы 4ИСПр, 2026 год  
 GitHub: [ImNotDarKing](https://github.com/ImNotDarKing)
-
+Railway: https://web-production-b8064e.up.railway.app/

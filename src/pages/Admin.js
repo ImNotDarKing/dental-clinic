@@ -33,18 +33,43 @@ const Admin = () => {
             const headers = { "Authorization": `Bearer ${adminToken}` };
 
             const doctorsRes = await fetch(`${API_BASE_URL}/admin/doctors`, { headers });
+            if (!doctorsRes.ok) {
+                if (doctorsRes.status === 403 || doctorsRes.status === 401) {
+                    localStorage.removeItem("adminToken");
+                    setIsLoggedIn(false);
+                    setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });
+                }
+                return;
+            }
             const doctorsData = await doctorsRes.json();
-            setDoctors(doctorsData);
+            setDoctors(Array.isArray(doctorsData) ? doctorsData : []);
 
             const usersRes = await fetch(`${API_BASE_URL}/admin/users`, { headers });
+            if (!usersRes.ok) {
+                if (usersRes.status === 403 || usersRes.status === 401) {
+                    localStorage.removeItem("adminToken");
+                    setIsLoggedIn(false);
+                    setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });
+                }
+                return;
+            }
             const usersData = await usersRes.json();
-            setUsers(usersData);
+            setUsers(Array.isArray(usersData) ? usersData : []);
 
             const appointmentsRes = await fetch(`${API_BASE_URL}/admin/appointments`, { headers });
+            if (!appointmentsRes.ok) {
+                if (appointmentsRes.status === 403 || appointmentsRes.status === 401) {
+                    localStorage.removeItem("adminToken");
+                    setIsLoggedIn(false);
+                    setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });
+                }
+                return;
+            }
             const appointmentsData = await appointmentsRes.json();
-            setAppointments(appointmentsData);
+            setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
         } catch (err) {
             console.error("Ошибка загрузки данных:", err);
+            setMessage({ text: "Ошибка при загрузке данных", type: "error" });
         }
     };
 
@@ -97,6 +122,13 @@ const Admin = () => {
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });
 
+            if (response.status === 403 || response.status === 401) {
+                localStorage.removeItem("adminToken");
+                setIsLoggedIn(false);
+                setMessage({ text: "Сессия истекла.", type: "error" });
+                return;
+            }
+
             if (response.ok) {
                 setDoctors(doctors.filter(d => d.doctor_id !== doctorId));
                 setMessage({ text: "Врач удалён", type: "success" });
@@ -117,6 +149,13 @@ const Admin = () => {
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });
 
+            if (response.status === 403 || response.status === 401) {
+                localStorage.removeItem("adminToken");
+                setIsLoggedIn(false);
+                setMessage({ text: "Сессия истекла.", type: "error" });
+                return;
+            }
+
             if (response.ok) {
                 setUsers(users.filter(u => u.user_id !== userId));
                 setMessage({ text: "Пользователь удалён", type: "success" });
@@ -136,6 +175,13 @@ const Admin = () => {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${localStorage.getItem("adminToken")}` }
             });
+
+            if (response.status === 403 || response.status === 401) {
+                localStorage.removeItem("adminToken");
+                setIsLoggedIn(false);
+                setMessage({ text: "Сессия истекла.", type: "error" });
+                return;
+            }
 
             if (response.ok) {
                 setAppointments(appointments.filter(a => a.appointment_id !== appointmentId));

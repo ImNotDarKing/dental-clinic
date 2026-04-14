@@ -24,13 +24,17 @@ const Profile = () => {
     useEffect(() => {
         const loadProfileData = async () => {
             const token = localStorage.getItem("token");
+            console.log('📱 Profile.js - Token from localStorage:', token ? '✓ Present' : '✗ Missing');
+            
             if (!token) {
+                console.log('❌ No token found, redirecting to /auth');
                 navigate("/auth");
                 return;
             }
 
             const decoded = parseJwt(token);
             if (!decoded || !decoded.role) {
+                console.log('❌ Token decode failed, redirecting to /auth');
                 navigate("/auth");
                 return;
             }
@@ -38,20 +42,24 @@ const Profile = () => {
             setUserRole(decoded.role);
 
             try {
+                console.log('📤 Sending GET /profile with Authorization header');
                 const profileRes = await fetch(`${API_BASE_URL}/profile`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` },
                     credentials: 'include'
                 });
 
+                console.log('📥 /profile response status:', profileRes.status);
+
                 if (profileRes.status === 401 || profileRes.status === 403) {
+                    console.log('⚠️  Authentication failed (401/403), clearing token');
                     localStorage.removeItem("token");
                     navigate("/auth");
                     return;
                 }
 
                 if (!profileRes.ok) {
-                    console.error("Ошибка загрузки профиля:", profileRes.status);
+                    console.error("❌ Ошибка загрузки профиля:", profileRes.status);
                     return;
                 }
 

@@ -48,14 +48,19 @@ const Auth = () => {
             const data = await response.json();
 
             if (response.ok) {
+                console.log('✅ Login successful, token received:', data.token ? '✓' : '✗');
                 localStorage.setItem("token", data.token);
+                const storedToken = localStorage.getItem("token");
+                console.log('💾 Token saved to localStorage:', storedToken ? '✓ Present' : '✗ Missing');
                 setMessage({ text: "Вход выполнен успешно", type: "success" });
                 window.dispatchEvent(new Event("authChange")); 
                 navigate("/");
             } else {
+                console.log('❌ Login failed:', data.message);
                 setMessage({ text: data.message, type: "error" });
             }
         } catch (err) {
+            console.error('❌ Login network error:', err);
             setMessage({ text: "Ошибка сети", type: "error" });
         }
     };

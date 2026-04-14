@@ -54,12 +54,15 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
         setMessage({ text: "", type: "" });
 
         const token = localStorage.getItem("token");
+        console.log('📋 AppointmentModal - Token:', token ? '✓ Present' : '✗ Missing');
+        
         if (!token) {
             setMessage({ text: "Необходимо войти в систему", type: "error" });
             return;
         }
 
         try {
+            console.log('📤 Sending POST /appointment with token');
             const response = await fetch(`${API_BASE_URL}/appointment`, {
                 method: "POST",
                 headers: {
@@ -74,7 +77,10 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
                 })
             });
 
+            console.log('📥 /appointment response status:', response.status);
+
             if (response.status === 401 || response.status === 403) {
+                console.log('⚠️  Authentication failed, clearing token');
                 setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });
                 localStorage.removeItem("token");
                 setTimeout(() => window.location.href = '/auth', 1500);
@@ -84,9 +90,12 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
             const data = await response.json();
 
             if (response.ok) {
+                console.log('✅ Appointment created successfully');
                 setMessage({ text: "Запись успешно создана", type: "success" });
                 setTimeout(onClose, 1500);
             } else {
+                console.log('❌ Failed to create appointment:', data.message);
+
                 setMessage({ text: data.message || "Ошибка при создании записи", type: "error" });
             }
         } catch (err) {

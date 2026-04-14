@@ -90,14 +90,23 @@ const authenticateToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
 
+	console.log('=== DEBUG authenticateToken ===');
+	console.log('authHeader:', authHeader ? 'Present' : 'Missing');
+	console.log('token:', token ? 'Present' : 'Missing');
+	console.log('jwtSecret:', config.jwtSecret ? 'Configured' : 'Missing');
+	console.log('================================');
+
 	if (!token) {
+		console.error('❌ No token found in Authorization header');
 		return res.status(401).json({ message: 'Токен отсутствует' });
 	}
 
 	jwt.verify(token, config.jwtSecret, (err, user) => {
 		if (err) {
+			console.error('❌ Token verification failed:', err.message);
 			return res.status(403).json({ message: 'Токен недействителен' });
 		}
+		console.log('✅ Token verified for user:', user);
 		req.user = user;
 		next();
 	});

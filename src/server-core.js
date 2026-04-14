@@ -11,7 +11,6 @@ const { getDB } = require('./db');
 
 const app = express();
 
-// Определяем допустимые origins в зависимости от окружения
 const allowedOrigins = [
 	config.corsOrigin,
 	'http://localhost:3000',
@@ -22,17 +21,15 @@ const allowedOrigins = [
 
 app.use(cors({
 	origin: (origin, callback) => {
-		// Если нет origin (например, мобильные приложения), разрешаем
 		if (!origin) return callback(null, true);
 		
-		// Проверяем, есть ли origin в списке разрешённых
 		if (allowedOrigins.includes(origin) || 
 			(config.nodeEnv === 'production' && origin.includes('railway.app')) ||
 			(config.nodeEnv === 'production' && origin.includes('onrender.com'))) {
 			callback(null, true);
 		} else {
 			console.log('CORS блокирован для:', origin);
-			callback(null, true); // На production разрешаем для отладки
+			callback(null, true); 
 		}
 	},
 	credentials: true,
@@ -41,7 +38,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Log ALL incoming requests
 app.use((req, res, next) => {
 	if (req.path === '/profile' || req.path.startsWith('/profile')) {
 		console.log(`\nINCOMING REQUEST TO ${req.path}`);
@@ -102,7 +98,6 @@ const authenticateToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
 	
-	// Check if this is a browser navigation request (requesting HTML document)
 	const acceptHeader = req.get('Accept') || '';
 	const isBrowserNavigationRequest = acceptHeader.includes('text/html') && 
 		(req.get('sec-fetch-dest') === 'document' || req.get('sec-fetch-mode') === 'navigate');
@@ -118,8 +113,6 @@ const authenticateToken = (req, res, next) => {
 	console.log('token:', token ? 'Present' : 'Missing');
 	console.log('================================');
 
-	// If this is a browser navigation request without token, serve the React app
-	// The React app will check localStorage for token and make authenticated API calls
 	if (isBrowserNavigationRequest && !token) {
 		console.log('Browser navigation detected without token - serving React app (index.html)');
 		const buildPath = path.join(__dirname, '../build');
@@ -132,7 +125,6 @@ const authenticateToken = (req, res, next) => {
 		});
 	}
 
-	// For API requests, token is required
 	if (!token) {
 		console.error(`No token found in Authorization header for ${req.method} ${req.path}`);
 		console.error('Request came from:', req.get('User-Agent'));
@@ -562,15 +554,12 @@ app.delete('/admin/appointments/:id', authenticateAdminToken, (req, res) => {
 });
 
 
-// Serve React app (both production and development)
 const buildPath = path.join(__dirname, '../build');
 console.log('Checking for React build at:', buildPath);
 console.log('Build folder exists:', fs.existsSync(buildPath));
 
-// Serve static files from build directory
 app.use(express.static(buildPath));
 
-// Catch all other routes and serve index.html for React Router (must be last)
 app.use((req, res) => {
 	const indexPath = path.join(buildPath, 'index.html');
 	res.sendFile(indexPath, (err) => {

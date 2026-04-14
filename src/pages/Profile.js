@@ -13,18 +13,6 @@ const Profile = () => {
     const [formData, setFormData] = useState({});
     const [photoFile, setPhotoFile] = useState(null); 
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/auth");
-            return;
-        }
-
-        const decoded = parseJwt(token);
-        setUserRole(decoded.role);
-        loadProfileData(decoded.role);
-    }, [navigate]);
-
     const parseJwt = (token) => {
         try {
             return JSON.parse(atob(token.split('.')[1]));
@@ -33,63 +21,74 @@ const Profile = () => {
         }
     };
 
-    const loadProfileData = async (role) => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            navigate("/auth");
-            return;
-        }
-
-        try {
-            const profileRes = await fetch(`${API_BASE_URL}/profile`, {
-                method: "GET",
-                headers: { "Authorization": `Bearer ${token}` },
-                credentials: 'include'
-            });
-
-            if (profileRes.status === 401 || profileRes.status === 403) {
-                localStorage.removeItem("token");
+    useEffect(() => {
+        const loadProfileData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
                 navigate("/auth");
                 return;
             }
 
-            if (!profileRes.ok) {
-                console.error("Ошибка загрузки профиля:", profileRes.status);
+            const decoded = parseJwt(token);
+            if (!decoded || !decoded.role) {
+                navigate("/auth");
                 return;
             }
 
-            const profile = await profileRes.json();
-            console.log("Загруженный профиль:", profile); 
-            setProfileData(profile);
-            setFormData(profile || {});
+            setUserRole(decoded.role);
 
-            const appointmentsRes = await fetch(
-                `${API_BASE_URL}/appointments?role=${role}`,
-                { 
+            try {
+                const profileRes = await fetch(`${API_BASE_URL}/profile`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` },
                     credentials: 'include'
+                });
+
+                if (profileRes.status === 401 || profileRes.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/auth");
+                    return;
                 }
-            );
 
-            if (appointmentsRes.status === 401 || appointmentsRes.status === 403) {
-                localStorage.removeItem("token");
-                navigate("/auth");
-                return;
+                if (!profileRes.ok) {
+                    console.error("Ошибка загрузки профиля:", profileRes.status);
+                    return;
+                }
+
+                const profile = await profileRes.json();
+                console.log("Загруженный профиль:", profile); 
+                setProfileData(profile);
+                setFormData(profile || {});
+
+                const appointmentsRes = await fetch(
+                    `${API_BASE_URL}/appointments?role=${decoded.role}`,
+                    { 
+                        method: "GET",
+                        headers: { "Authorization": `Bearer ${token}` },
+                        credentials: 'include'
+                    }
+                );
+
+                if (appointmentsRes.status === 401 || appointmentsRes.status === 403) {
+                    localStorage.removeItem("token");
+                    navigate("/auth");
+                    return;
+                }
+
+                if (!appointmentsRes.ok) {
+                    console.error("Ошибка загрузки назначений:", appointmentsRes.status);
+                    return;
+                }
+
+                const apps = await appointmentsRes.json();
+                setAppointments(Array.isArray(apps) ? apps : []);
+            } catch (err) {
+                console.error("Ошибка загрузки профиля:", err);
             }
+        };
 
-            if (!appointmentsRes.ok) {
-                console.error("Ошибка загрузки назначений:", appointmentsRes.status);
-                return;
-            }
-
-            const apps = await appointmentsRes.json();
-            setAppointments(Array.isArray(apps) ? apps : []);
-        } catch (err) {
-            console.error("Ошибка загрузки профиля:", err);
-        }
-    };
+        loadProfileData();
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({

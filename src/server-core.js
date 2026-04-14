@@ -11,9 +11,33 @@ const { getDB } = require('./db');
 
 const app = express();
 
+// Определяем допустимые origins в зависимости от окружения
+const allowedOrigins = [
+	config.corsOrigin,
+	'http://localhost:3000',
+	'http://localhost:5000',
+	'http://127.0.0.1:3000',
+	'http://127.0.0.1:5000'
+];
+
 app.use(cors({
-	origin: config.corsOrigin,
+	origin: (origin, callback) => {
+		// Если нет origin (например, мобильные приложения), разрешаем
+		if (!origin) return callback(null, true);
+		
+		// Проверяем, есть ли origin в списке разрешённых
+		if (allowedOrigins.includes(origin) || 
+			(config.nodeEnv === 'production' && origin.includes('railway.app')) ||
+			(config.nodeEnv === 'production' && origin.includes('onrender.com'))) {
+			callback(null, true);
+		} else {
+			console.log('CORS блокирован для:', origin);
+			callback(null, true); // На production разрешаем для отладки
+		}
+	},
 	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 

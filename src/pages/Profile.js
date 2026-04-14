@@ -36,10 +36,29 @@ const Profile = () => {
     const loadProfileData = async (role) => {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+            navigate("/auth");
+            return;
+        }
+
         try {
             const profileRes = await fetch(`${API_BASE_URL}/profile`, {
-                headers: { "Authorization": `Bearer ${token}` }
+                method: "GET",
+                headers: { "Authorization": `Bearer ${token}` },
+                credentials: 'include'
             });
+
+            if (profileRes.status === 401 || profileRes.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/auth");
+                return;
+            }
+
+            if (!profileRes.ok) {
+                console.error("Ошибка загрузки профиля:", profileRes.status);
+                return;
+            }
+
             const profile = await profileRes.json();
             console.log("Загруженный профиль:", profile); 
             setProfileData(profile);
@@ -47,10 +66,26 @@ const Profile = () => {
 
             const appointmentsRes = await fetch(
                 `${API_BASE_URL}/appointments?role=${role}`,
-                { headers: { "Authorization": `Bearer ${token}` } }
+                { 
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` },
+                    credentials: 'include'
+                }
             );
+
+            if (appointmentsRes.status === 401 || appointmentsRes.status === 403) {
+                localStorage.removeItem("token");
+                navigate("/auth");
+                return;
+            }
+
+            if (!appointmentsRes.ok) {
+                console.error("Ошибка загрузки назначений:", appointmentsRes.status);
+                return;
+            }
+
             const apps = await appointmentsRes.json();
-            setAppointments(apps);
+            setAppointments(Array.isArray(apps) ? apps : []);
         } catch (err) {
             console.error("Ошибка загрузки профиля:", err);
         }

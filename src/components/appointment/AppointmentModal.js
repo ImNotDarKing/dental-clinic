@@ -66,6 +66,7 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     doctor_id: doctorId,
                     appointment_date: formData.appointment_date,
@@ -73,16 +74,24 @@ const AppointmentModal = ({ doctorId, doctorName, onClose }) => {
                 })
             });
 
+            if (response.status === 401 || response.status === 403) {
+                setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });
+                localStorage.removeItem("token");
+                setTimeout(() => window.location.href = '/auth', 1500);
+                return;
+            }
+
             const data = await response.json();
 
             if (response.ok) {
                 setMessage({ text: "Запись успешно создана", type: "success" });
                 setTimeout(onClose, 1500);
             } else {
-                setMessage({ text: data.message, type: "error" });
+                setMessage({ text: data.message || "Ошибка при создании записи", type: "error" });
             }
         } catch (err) {
             setMessage({ text: "Ошибка сети", type: "error" });
+            console.error("Ошибка запроса:", err);
         }
     };
 

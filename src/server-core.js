@@ -94,6 +94,7 @@ const authenticateToken = (req, res, next) => {
 	console.log('Method:', req.method);
 	console.log('URL:', req.url);
 	console.log('Path:', req.path);
+	console.log('All Headers:', JSON.stringify(req.headers, null, 2));
 	console.log('authHeader:', authHeader ? 'Present' : 'Missing');
 	console.log('token:', token ? 'Present' : 'Missing');
 	console.log('jwtSecret:', config.jwtSecret ? 'Configured' : 'Missing');
@@ -101,6 +102,7 @@ const authenticateToken = (req, res, next) => {
 
 	if (!token) {
 		console.error(`❌ No token found in Authorization header for ${req.method} ${req.path}`);
+		console.error('Request came from:', req.get('User-Agent'));
 		return res.status(401).json({ message: 'Токен отсутствует' });
 	}
 

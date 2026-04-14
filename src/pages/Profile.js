@@ -43,6 +43,7 @@ const Profile = () => {
 
             try {
                 console.log('📤 Sending GET /profile with Authorization header');
+                console.trace('GET /profile called from:'); // Покажет стек вызовов
                 const profileRes = await fetch(`${API_BASE_URL}/profile`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` },

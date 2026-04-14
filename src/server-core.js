@@ -41,6 +41,18 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Log ALL incoming requests
+app.use((req, res, next) => {
+	if (req.path === '/profile' || req.path.startsWith('/profile')) {
+		console.log(`\n🔵 INCOMING REQUEST TO ${req.path}`);
+		console.log(`Method: ${req.method}`);
+		console.log(`URL: ${req.url}`);
+		console.log(`Authorization header: ${req.headers['authorization'] ? 'Present' : 'Missing'}`);
+		console.log(`User-Agent: ${req.get('User-Agent')}`);
+		console.log(`Referer: ${req.get('Referer')}`);
+	}
+	next();
+});
 
 app.use('/img', express.static(path.join(__dirname, '../img')));
 

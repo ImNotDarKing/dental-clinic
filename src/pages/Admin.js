@@ -25,22 +25,22 @@ const Admin = () => {
     const loadData = async () => {
         try {
             const adminToken = localStorage.getItem("adminToken");
-            console.log('🔐 Admin.js - Admin token:', adminToken ? '✓ Present' : '✗ Missing');
+            console.log('Admin.js - Admin token:', adminToken ? '✓ Present' : '✗ Missing');
             
             if (!adminToken) {
-                console.error("❌ Токен не найден");
+                console.error("Токен не найден");
                 return;
             }
 
             const headers = { "Authorization": `Bearer ${adminToken}` };
 
-            console.log('📤 Sending GET /admin/doctors');
+            console.log('Sending GET /admin/doctors');
             const doctorsRes = await fetch(`${API_BASE_URL}/admin/doctors`, { headers });
-            console.log('📥 /admin/doctors response status:', doctorsRes.status);
+            console.log('/admin/doctors response status:', doctorsRes.status);
             
             if (!doctorsRes.ok) {
                 if (doctorsRes.status === 403 || doctorsRes.status === 401) {
-                    console.log('⚠️  Authentication failed (401/403), clearing admin token');
+                    console.log('Authentication failed (401/403), clearing admin token');
                     localStorage.removeItem("adminToken");
                     setIsLoggedIn(false);
                     setMessage({ text: "Сессия истекла. Пожалуйста, войдите снова.", type: "error" });

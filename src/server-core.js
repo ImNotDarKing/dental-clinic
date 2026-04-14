@@ -44,7 +44,7 @@ app.use(express.json());
 // Log ALL incoming requests
 app.use((req, res, next) => {
 	if (req.path === '/profile' || req.path.startsWith('/profile')) {
-		console.log(`\n🔵 INCOMING REQUEST TO ${req.path}`);
+		console.log(`\nINCOMING REQUEST TO ${req.path}`);
 		console.log(`Method: ${req.method}`);
 		console.log(`URL: ${req.url}`);
 		console.log(`Authorization header: ${req.headers['authorization'] ? 'Present' : 'Missing'}`);
@@ -121,7 +121,7 @@ const authenticateToken = (req, res, next) => {
 	// If this is a browser navigation request without token, serve the React app
 	// The React app will check localStorage for token and make authenticated API calls
 	if (isBrowserNavigationRequest && !token) {
-		console.log('📱 Browser navigation detected without token - serving React app (index.html)');
+		console.log('Browser navigation detected without token - serving React app (index.html)');
 		const buildPath = path.join(__dirname, '../build');
 		const indexPath = path.join(buildPath, 'index.html');
 		return res.sendFile(indexPath, (err) => {
@@ -134,17 +134,17 @@ const authenticateToken = (req, res, next) => {
 
 	// For API requests, token is required
 	if (!token) {
-		console.error(`❌ No token found in Authorization header for ${req.method} ${req.path}`);
+		console.error(`No token found in Authorization header for ${req.method} ${req.path}`);
 		console.error('Request came from:', req.get('User-Agent'));
 		return res.status(401).json({ message: 'Токен отсутствует' });
 	}
 
 	jwt.verify(token, config.jwtSecret, (err, user) => {
 		if (err) {
-			console.error('❌ Token verification failed:', err.message);
+			console.error('Token verification failed:', err.message);
 			return res.status(403).json({ message: 'Токен недействителен' });
 		}
-		console.log('✅ Token verified for user:', user);
+		console.log('Token verified for user:', user);
 		req.user = user;
 		next();
 	});
@@ -163,16 +163,16 @@ const authenticateAdminToken = (req, res, next) => {
 	console.log('====================================');
 
 	if (!token) {
-		console.error(`❌ No admin token found for ${req.method} ${req.path}`);
+		console.error(`No admin token found for ${req.method} ${req.path}`);
 		return res.status(401).json({ message: 'Токен отсутствует' });
 	}
 
 	jwt.verify(token, config.adminTokenSecret, (err, admin) => {
 		if (err) {
-			console.error(`❌ Admin token verification failed:`, err.message);
+			console.error(`Admin token verification failed:`, err.message);
 			return res.status(403).json({ message: 'Токен недействителен' });
 		}
-		console.log('✅ Admin token verified');
+		console.log('Admin token verified');
 		req.admin = admin;
 		next();
 	});
@@ -278,7 +278,7 @@ app.post('/login', async (req, res) => {
 
 
 app.get('/profile', authenticateToken, (req, res) => {
-	console.log(`📥 Handling GET /profile for user ${req.user.id}`);
+	console.log(`Handling GET /profile for user ${req.user.id}`);
 	const db = getDB();
 	const user_id = req.user.id;
 	const role = req.user.role;
@@ -296,7 +296,7 @@ app.get('/profile', authenticateToken, (req, res) => {
 
 
 app.put('/profile', authenticateToken, (req, res) => {
-	console.log(`📥 Handling PUT /profile for user ${req.user.id}`);
+	console.log(`Handling PUT /profile for user ${req.user.id}`);
 	const db = getDB();
 	const user_id = req.user.id;
 	const role = req.user.role;
@@ -330,7 +330,7 @@ app.put('/profile', authenticateToken, (req, res) => {
 
 
 app.post('/appointment', authenticateToken, async (req, res) => {
-	console.log(`📥 Handling POST /appointment for user ${req.user.id}`);
+	console.log(`Handling POST /appointment for user ${req.user.id}`);
 	const db = getDB();
 	const { doctor_id, appointment_date, service_type } = req.body;
 	const user_id = req.user.id;
@@ -359,7 +359,7 @@ app.post('/appointment', authenticateToken, async (req, res) => {
 
 
 app.get('/appointments', authenticateToken, (req, res) => {
-	console.log(`📥 Handling GET /appointments for user ${req.user.id}`);
+	console.log(`Handling GET /appointments for user ${req.user.id}`);
 	const db = getDB();
 	const user_id = req.user.id;
 	const role = req.user.role;
@@ -399,7 +399,7 @@ app.get('/appointments', authenticateToken, (req, res) => {
 });
 
 
-app.delete('/appointment/:id', authenticateToken, (req, res) => {	console.log(`📥 Handling DELETE /appointment/${req.params.id} for user ${req.user.id}`);	const db = getDB();
+app.delete('/appointment/:id', authenticateToken, (req, res) => {	console.log(`Handling DELETE /appointment/${req.params.id} for user ${req.user.id}`);	const db = getDB();
 	const appointmentId = req.params.id;
 	const user_id = req.user.id;
 
@@ -454,7 +454,7 @@ app.post('/admin/login', async (req, res) => {
 
 
 app.get('/admin/doctors', authenticateAdminToken, (req, res) => {
-	console.log('📥 Handling GET /admin/doctors');
+	console.log('Handling GET /admin/doctors');
 	const db = getDB();
 
 	try {
@@ -471,7 +471,7 @@ app.get('/admin/doctors', authenticateAdminToken, (req, res) => {
 
 
 app.get('/admin/users', authenticateAdminToken, (req, res) => {
-	console.log('📥 Handling GET /admin/users');
+	console.log('Handling GET /admin/users');
 	const db = getDB();
 
 	try {
@@ -485,7 +485,7 @@ app.get('/admin/users', authenticateAdminToken, (req, res) => {
 
 
 app.get('/admin/appointments', authenticateAdminToken, (req, res) => {
-	console.log('📥 Handling GET /admin/appointments');
+	console.log('Handling GET /admin/appointments');
 	const db = getDB();
 
 	try {
@@ -506,7 +506,7 @@ app.get('/admin/appointments', authenticateAdminToken, (req, res) => {
 
 
 app.delete('/admin/doctors/:id', authenticateAdminToken, (req, res) => {
-	console.log(`📥 Handling DELETE /admin/doctors/${req.params.id}`);
+	console.log(`Handling DELETE /admin/doctors/${req.params.id}`);
 	const db = getDB();
 	const doctorId = req.params.id;
 
@@ -525,7 +525,7 @@ app.delete('/admin/doctors/:id', authenticateAdminToken, (req, res) => {
 
 
 app.delete('/admin/users/:id', authenticateAdminToken, (req, res) => {
-	console.log(`📥 Handling DELETE /admin/users/${req.params.id}`);
+	console.log(`Handling DELETE /admin/users/${req.params.id}`);
 	const db = getDB();
 	const userId = req.params.id;
 
@@ -544,7 +544,7 @@ app.delete('/admin/users/:id', authenticateAdminToken, (req, res) => {
 
 
 app.delete('/admin/appointments/:id', authenticateAdminToken, (req, res) => {
-	console.log(`📥 Handling DELETE /admin/appointments/${req.params.id}`);
+	console.log(`Handling DELETE /admin/appointments/${req.params.id}`);
 	const db = getDB();
 	const appointmentId = req.params.id;
 

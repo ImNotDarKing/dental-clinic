@@ -101,17 +101,38 @@ if (config.storageType === 'disk') {
 const authenticateToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
+	
+	// Check if this is a browser navigation request (requesting HTML document)
+	const acceptHeader = req.get('Accept') || '';
+	const isBrowserNavigationRequest = acceptHeader.includes('text/html') && 
+		(req.get('sec-fetch-dest') === 'document' || req.get('sec-fetch-mode') === 'navigate');
 
 	console.log('=== DEBUG authenticateToken ===');
 	console.log('Method:', req.method);
 	console.log('URL:', req.url);
 	console.log('Path:', req.path);
-	console.log('All Headers:', JSON.stringify(req.headers, null, 2));
+	console.log('sec-fetch-dest:', req.get('sec-fetch-dest'));
+	console.log('sec-fetch-mode:', req.get('sec-fetch-mode'));
+	console.log('Is browser navigation:', isBrowserNavigationRequest);
 	console.log('authHeader:', authHeader ? 'Present' : 'Missing');
 	console.log('token:', token ? 'Present' : 'Missing');
-	console.log('jwtSecret:', config.jwtSecret ? 'Configured' : 'Missing');
 	console.log('================================');
 
+	// If this is a browser navigation request without token, serve the React app
+	// The React app will check localStorage for token and make authenticated API calls
+	if (isBrowserNavigationRequest && !token) {
+		console.log('📱 Browser navigation detected without token - serving React app (index.html)');
+		const buildPath = path.join(__dirname, '../build');
+		const indexPath = path.join(buildPath, 'index.html');
+		return res.sendFile(indexPath, (err) => {
+			if (err) {
+				console.error('Error serving index.html:', err);
+				return res.status(500).json({ message: 'Error serving app' });
+			}
+		});
+	}
+
+	// For API requests, token is required
 	if (!token) {
 		console.error(`❌ No token found in Authorization header for ${req.method} ${req.path}`);
 		console.error('Request came from:', req.get('User-Agent'));

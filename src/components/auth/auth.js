@@ -50,8 +50,6 @@ const Auth = () => {
             if (response.ok) {
                 console.log('Login successful, token received:', data.token ? '✓' : '✗');
                 localStorage.setItem("token", data.token);
-                const storedToken = localStorage.getItem("token");
-                console.log('Token saved to localStorage:', storedToken ? '✓ Present' : '✗ Missing');
                 setMessage({ text: "Вход выполнен успешно", type: "success" });
                 window.dispatchEvent(new Event("authChange")); 
                 navigate("/");
